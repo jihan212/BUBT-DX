@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 export default function AuthPage() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
+	const [activeTab, setActiveTab] = useState('student');
 	const router = useRouter();
 
 	const handleLogin = async (role, email, password) => {
@@ -53,6 +54,10 @@ export default function AuthPage() {
 		}
 	};
 
+	const handleDemoLogin = (email, password) => {
+		handleLogin(null, email, password);
+	};
+
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
 			<div className='w-full max-w-md'>
@@ -66,13 +71,15 @@ export default function AuthPage() {
 				<Tabs
 					defaultValue='student'
 					className='w-full'
+					value={activeTab}
+					onValueChange={setActiveTab}
 				>
-					<TabsList className='grid w-full grid-cols-2'>
+					{/* <TabsList className='grid w-full grid-cols-2'>
 						<TabsTrigger value='student'>Student Login</TabsTrigger>
 						<TabsTrigger value='recruiter'>
 							Recruiter Login
 						</TabsTrigger>
-					</TabsList>
+					</TabsList> */}
 
 					<TabsContent value='student'>
 						<StudentLoginForm
@@ -91,15 +98,57 @@ export default function AuthPage() {
 					</TabsContent>
 				</Tabs>
 
-				<div className='mt-6 text-center text-sm text-gray-600'>
-					<p>Demo Credentials:</p>
-					<p className='mt-1'>
-						Student: john.doe@student.bubt.edu / password123
+				<div className='mt-6 p-4 bg-white rounded-lg border border-gray-200 shadow-sm'>
+					<p className='text-sm font-semibold text-gray-900 mb-3'>
+						Demo Credentials (Click to login):
 					</p>
-					<p className='mt-1'>
-						Recruiter: hr@techcorp.com / password123
-					</p>
-					<p className='mt-1'>Admin: admin@bubt.edu / admin123</p>
+					<div className='space-y-2'>
+						<button
+							onClick={() => {
+								setActiveTab('student');
+								handleDemoLogin(
+									'john.doe@student.bubt.edu',
+									'password123'
+								);
+							}}
+							disabled={isLoading}
+							className='w-full text-left p-2 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-transparent hover:border-blue-200'
+						>
+							<p className='text-sm font-medium text-blue-600 hover:text-blue-700'>
+								Student: john.doe@student.bubt.edu
+							</p>
+							<p className='text-xs text-gray-500'>password123</p>
+						</button>
+						<button
+							onClick={() => {
+								setActiveTab('recruiter');
+								handleDemoLogin(
+									'hr@techcorp.com',
+									'password123'
+								);
+							}}
+							disabled={isLoading}
+							className='w-full text-left p-2 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-transparent hover:border-blue-200'
+						>
+							<p className='text-sm font-medium text-blue-600 hover:text-blue-700'>
+								Recruiter: hr@techcorp.com
+							</p>
+							<p className='text-xs text-gray-500'>password123</p>
+						</button>
+						<button
+							onClick={() => {
+								setActiveTab('student');
+								handleDemoLogin('admin@bubt.edu', 'admin123');
+							}}
+							disabled={isLoading}
+							className='w-full text-left p-2 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-transparent hover:border-blue-200'
+						>
+							<p className='text-sm font-medium text-blue-600 hover:text-blue-700'>
+								Admin: admin@bubt.edu
+							</p>
+							<p className='text-xs text-gray-500'>admin123</p>
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -118,9 +167,9 @@ function StudentLoginForm({ onLogin, isLoading, error }) {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Student Login</CardTitle>
+				<CardTitle> Login</CardTitle>
 				<CardDescription>
-					Access your student dashboard and job opportunities
+					Access your dashboard and job opportunities
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
