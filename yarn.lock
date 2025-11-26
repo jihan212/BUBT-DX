@@ -613,7 +613,7 @@
 "@unrs/resolver-binding-linux-riscv64-musl@1.11.1":
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/@unrs/resolver-binding-linux-riscv64-musl/-/resolver-binding-linux-riscv64-musl-1.11.1.tgz#0bec6f1258fc390e6b305e9ff44256cb207de165"
-  integrity sha512-mJ5vuDaIZ+l/acv01sHoXfpnyrNKOk/3aDoEdLO/Xtn9HuZlDD6jKxHlkN8ZhWyLJsRBxfv9GYM2utQ1SChKew==
+  integrity sha512-mJ5vuDaIZ+l/acv01sHoXfpnyrNKOk/3abiswasdLO/Xtn9HuZlDD6jKxHlkN8ZhWyLJsRBxfv9GYM2utQ1SChKew==
 
 "@unrs/resolver-binding-linux-s390x-gnu@1.11.1":
   version "1.11.1"

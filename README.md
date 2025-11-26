@@ -74,7 +74,7 @@ npm start
 
 #### Student Login
 
--   **Email**: john.doe@student.bubt.edu
+-   **Email**: monisa.biswas@student.bubt.edu
 -   **Password**: password123
 
 #### Recruiter Login

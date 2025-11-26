@@ -211,7 +211,7 @@ export default function Home() {
 										Email:
 									</div>
 									<code className='text-blue-800 font-mono'>
-										john.doe@student.bubt.edu
+										monisa.biswas@student.bubt.edu
 									</code>
 								</div>
 								<div className='bg-blue-50 p-3 rounded-lg'>

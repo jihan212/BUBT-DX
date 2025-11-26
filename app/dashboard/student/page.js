@@ -119,8 +119,8 @@ export default function StudentDashboard() {
 						<Link href='/dashboard/student/profile'>
 							<Button
 								size='lg'
-								variant='outline'
-								className='border-white/30 text-white hover:bg-white/10'
+								variant='secondary'
+								className='bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20'
 							>
 								<User className='mr-2 h-5 w-5' />
 								My Profile
@@ -280,7 +280,7 @@ export default function StudentDashboard() {
 								</div>
 							)}
 							<Link href='/dashboard/student/profile'>
-								<Button className='w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'>
+								<Button className='w-full mt-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'>
 									<User className='mr-2 h-4 w-4' />
 									{user?.profileComplete
 										? 'Update Profile'

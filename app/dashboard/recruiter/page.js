@@ -132,8 +132,8 @@ export default function RecruiterDashboard() {
 						<Link href='/dashboard/recruiter/applicants'>
 							<Button
 								size='lg'
-								variant='outline'
-								className='border-white/30 text-white hover:bg-white/10'
+								variant='secondary'
+								className='bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20'
 							>
 								<Users className='mr-2 h-5 w-5' />
 								View Applicants

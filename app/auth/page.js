@@ -107,7 +107,7 @@ export default function AuthPage() {
 							onClick={() => {
 								setActiveTab('student');
 								handleDemoLogin(
-									'john.doe@student.bubt.edu',
+									'monisa.biswas@student.bubt.edu',
 									'password123'
 								);
 							}}
@@ -115,7 +115,7 @@ export default function AuthPage() {
 							className='w-full text-left p-2 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-transparent hover:border-blue-200'
 						>
 							<p className='text-sm font-medium text-blue-600 hover:text-blue-700'>
-								Student: john.doe@student.bubt.edu
+								Student: monisa.biswas@student.bubt.edu
 							</p>
 							<p className='text-xs text-gray-500'>password123</p>
 						</button>
