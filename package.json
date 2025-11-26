@@ -7,7 +7,8 @@
 		"dev": "cross-env ./node_modules/.bin/next dev",
 		"build": "cross-env ./node_modules/.bin/next build",
 		"start": "cross-env ./node_modules/.bin/next start",
-		"lint": "cross-env ./node_modules/.bin/next lint"
+		"lint": "cross-env ./node_modules/.bin/next lint",
+		"preinstall": "yarn cache clean || true"
 	},
 	"keywords": [],
 	"author": "",
