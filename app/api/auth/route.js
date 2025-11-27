@@ -1,39 +1,33 @@
-import { getUserByEmail } from '@/lib/data';
 import { NextResponse } from 'next/server';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Proxy login request to backend
 export async function POST(request) {
 	try {
-		const { email, password } = await request.json();
+		const body = await request.json();
 
-		if (!email || !password) {
-			return NextResponse.json(
-				{ error: 'Email and password are required' },
-				{ status: 400 }
-			);
+		const backendResponse = await fetch(`${BACKEND_URL}/auth/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(body),
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
-
-		const user = getUserByEmail(email);
-
-		if (!user || user.password !== password) {
-			return NextResponse.json(
-				{ error: 'Invalid email or password' },
-				{ status: 401 }
-			);
-		}
-
-		// Remove password from response
-		const { password: _, ...userWithoutPassword } = user;
 
 		// Create response with user data
-		const response = NextResponse.json({
-			message: 'Login successful',
-			user: userWithoutPassword,
-		});
+		const response = NextResponse.json(data);
 
 		// Set a simple cookie for session management (non-httpOnly for demo purposes)
 		response.cookies.set(
 			'user_session',
-			JSON.stringify(userWithoutPassword),
+			JSON.stringify(data.user),
 			{
 				httpOnly: false, // Allow client-side access for demo
 				secure: process.env.NODE_ENV === 'production',
@@ -44,6 +38,7 @@ export async function POST(request) {
 
 		return response;
 	} catch (error) {
+		console.error('Auth proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -52,10 +47,10 @@ export async function POST(request) {
 }
 
 export async function DELETE() {
-	// Logout endpoint
+	// Logout endpoint - clear cookie
 	const response = NextResponse.json({ message: 'Logged out successfully' });
 	response.cookies.set('user_session', '', {
-		httpOnly: false, // Match login cookie settings
+		httpOnly: false,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'strict',
 		maxAge: 0,

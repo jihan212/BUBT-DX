@@ -1,34 +1,42 @@
-import {
-	jobs,
-	getApplicationsByStudent,
-	getApplicationsByJob,
-	getJobById,
-	users,
-} from '@/lib/data';
 import { NextResponse } from 'next/server';
 
-// GET /api/applications - Get applications by student or job
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Proxy applications requests to backend
 export async function GET(request) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const studentId = searchParams.get('student');
 		const jobId = searchParams.get('job');
 
+		let endpoint;
 		if (studentId) {
-			const applications = getApplicationsByStudent(studentId);
-			return NextResponse.json(applications);
+			endpoint = `${BACKEND_URL}/applications?student=${studentId}`;
+		} else if (jobId) {
+			endpoint = `${BACKEND_URL}/applications?job=${jobId}`;
+		} else {
+			return NextResponse.json(
+				{ error: 'Student ID or Job ID is required' },
+				{ status: 400 }
+			);
 		}
 
-		if (jobId) {
-			const applications = getApplicationsByJob(jobId);
-			return NextResponse.json(applications);
+		const backendResponse = await fetch(endpoint, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		return NextResponse.json(
-			{ error: 'Student ID or Job ID is required' },
-			{ status: 400 }
-		);
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Applications GET proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -36,47 +44,27 @@ export async function GET(request) {
 	}
 }
 
-// POST /api/applications - Apply for a job
 export async function POST(request) {
 	try {
-		const { jobId, studentId } = await request.json();
+		const body = await request.json();
 
-		if (!jobId || !studentId) {
-			return NextResponse.json(
-				{ error: 'Job ID and Student ID are required' },
-				{ status: 400 }
-			);
+		const backendResponse = await fetch(`${BACKEND_URL}/applications`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(body),
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		const job = getJobById(jobId);
-		if (!job) {
-			return NextResponse.json(
-				{ error: 'Job not found' },
-				{ status: 404 }
-			);
-		}
-
-		// Check if student already applied
-		const existingApplication = job.applications.find(
-			(app) => app.studentId === studentId
-		);
-		if (existingApplication) {
-			return NextResponse.json(
-				{ error: 'Already applied for this job' },
-				{ status: 400 }
-			);
-		}
-
-		const newApplication = {
-			studentId,
-			appliedDate: new Date().toISOString().split('T')[0],
-			status: 'Pending',
-		};
-
-		job.applications.push(newApplication);
-
-		return NextResponse.json(newApplication, { status: 201 });
+		return NextResponse.json(data, { status: backendResponse.status });
 	} catch (error) {
+		console.error('Applications POST proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -84,40 +72,27 @@ export async function POST(request) {
 	}
 }
 
-// PUT /api/applications - Update application status
 export async function PUT(request) {
 	try {
-		const { applicationId, jobId, status } = await request.json();
+		const body = await request.json();
 
-		if (!applicationId || !jobId || !status) {
-			return NextResponse.json(
-				{ error: 'Application ID, Job ID, and status are required' },
-				{ status: 400 }
-			);
+		const backendResponse = await fetch(`${BACKEND_URL}/applications`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(body),
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		const job = getJobById(jobId);
-		if (!job) {
-			return NextResponse.json(
-				{ error: 'Job not found' },
-				{ status: 404 }
-			);
-		}
-
-		const application = job.applications.find(
-			(app) => app.id === applicationId
-		);
-		if (!application) {
-			return NextResponse.json(
-				{ error: 'Application not found' },
-				{ status: 404 }
-			);
-		}
-
-		application.status = status;
-
-		return NextResponse.json(application);
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Applications PUT proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }

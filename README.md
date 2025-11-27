@@ -27,16 +27,53 @@ A comprehensive Next.js 14 application for connecting BUBT students with career 
 ## 🛠 Tech Stack
 
 -   **Frontend**: Next.js 14 with App Router
+-   **Backend**: Node.js + Express.js
+-   **Database**: MongoDB with Mongoose ODM
 -   **Styling**: Tailwind CSS
 -   **UI Components**: Shadcn UI
 -   **Authentication**: Cookie-based session management
--   **API**: Next.js Route Handlers
+-   **API**: Express.js REST API (proxied through Next.js routes)
 -   **State Management**: React hooks
 
 ## 📋 Prerequisites
 
 -   Node.js 18.x or higher
 -   npm or yarn package manager
+-   MongoDB (local installation or MongoDB Atlas account)
+
+## 🔧 Backend Setup
+
+**📖 Complete Backend Setup Guide:** See [BACKEND_SETUP_GUIDE.md](./BACKEND_SETUP_GUIDE.md) for detailed instructions.
+
+### Quick Start:
+
+1. **Set up MongoDB** (Local or Atlas - see guide above)
+2. **Configure Backend:**
+   ```bash
+   cd backend
+   npm install
+   cp .env.example .env
+   # Edit .env with your MongoDB connection string
+   ```
+3. **Seed Database:**
+   ```bash
+   npm run seed
+   ```
+4. **Start Backend Server:**
+   ```bash
+   npm run dev  # Development mode
+   ```
+5. **Configure Frontend:**
+   - Create `.env.local` in root directory:
+     ```env
+     NEXT_PUBLIC_API_URL=http://localhost:5000/api
+     ```
+6. **Start Frontend:**
+   ```bash
+   npm run dev
+   ```
+
+The backend runs on `http://localhost:5000` and frontend on `http://localhost:3000`.
 
 ## 🚀 Getting Started
 

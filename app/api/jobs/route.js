@@ -1,19 +1,33 @@
-import { jobs, getJobsByRecruiter } from '@/lib/data';
 import { NextResponse } from 'next/server';
 
-// GET /api/jobs - Get all jobs or jobs by recruiter
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Proxy jobs requests to backend
 export async function GET(request) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const recruiterId = searchParams.get('recruiter');
 
-		if (recruiterId) {
-			const recruiterJobs = getJobsByRecruiter(recruiterId);
-			return NextResponse.json(recruiterJobs);
+		const endpoint = recruiterId 
+			? `${BACKEND_URL}/jobs?recruiter=${recruiterId}`
+			: `${BACKEND_URL}/jobs`;
+
+		const backendResponse = await fetch(endpoint, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		return NextResponse.json(jobs);
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Jobs GET proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -21,7 +35,6 @@ export async function GET(request) {
 	}
 }
 
-// POST /api/jobs - Create a new job
 export async function POST(request) {
 	try {
 		const jobData = await request.json();
@@ -35,18 +48,23 @@ export async function POST(request) {
 			);
 		}
 
-		const newJob = {
-			id: `job${jobs.length + 1}`,
-			...jobData,
-			postedBy: recruiterId,
-			postedDate: new Date().toISOString().split('T')[0],
-			applications: [],
-		};
+		const backendResponse = await fetch(`${BACKEND_URL}/jobs?postedBy=${recruiterId}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(jobData),
+		});
 
-		jobs.push(newJob);
+		const data = await backendResponse.json();
 
-		return NextResponse.json(newJob, { status: 201 });
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
+		}
+
+		return NextResponse.json(data, { status: backendResponse.status });
 	} catch (error) {
+		console.error('Jobs POST proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }

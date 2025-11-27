@@ -1,28 +1,26 @@
-import { users } from '@/lib/data';
 import { NextResponse } from 'next/server';
 
-// GET /api/users/[id] - Get a specific user
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Proxy user by ID requests to backend
 export async function GET(request, { params }) {
 	try {
-		// Find user in students
-		let user = users.students.find((s) => s.id === params.id);
-		if (user) {
-			return NextResponse.json({ ...user, role: 'student' });
+		const backendResponse = await fetch(`${BACKEND_URL}/users/${params.id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		// Find user in recruiters
-		user = users.recruiters.find((r) => r.id === params.id);
-		if (user) {
-			return NextResponse.json({ ...user, role: 'recruiter' });
-		}
-
-		// Check admin
-		if (users.admin.id === params.id) {
-			return NextResponse.json({ ...users.admin, role: 'admin' });
-		}
-
-		return NextResponse.json({ error: 'User not found' }, { status: 404 });
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('User GET proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -30,45 +28,27 @@ export async function GET(request, { params }) {
 	}
 }
 
-// PUT /api/users/[id] - Update a user profile
 export async function PUT(request, { params }) {
 	try {
-		const updatedData = await request.json();
+		const userData = await request.json();
 
-		// Find and update student
-		let userIndex = users.students.findIndex((s) => s.id === params.id);
-		if (userIndex !== -1) {
-			users.students[userIndex] = {
-				...users.students[userIndex],
-				...updatedData,
-			};
-			return NextResponse.json({
-				...users.students[userIndex],
-				role: 'student',
-			});
+		const backendResponse = await fetch(`${BACKEND_URL}/users/${params.id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(userData),
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		// Find and update recruiter
-		userIndex = users.recruiters.findIndex((r) => r.id === params.id);
-		if (userIndex !== -1) {
-			users.recruiters[userIndex] = {
-				...users.recruiters[userIndex],
-				...updatedData,
-			};
-			return NextResponse.json({
-				...users.recruiters[userIndex],
-				role: 'recruiter',
-			});
-		}
-
-		// Update admin
-		if (users.admin.id === params.id) {
-			users.admin = { ...users.admin, ...updatedData };
-			return NextResponse.json({ ...users.admin, role: 'admin' });
-		}
-
-		return NextResponse.json({ error: 'User not found' }, { status: 404 });
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('User PUT proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }

@@ -1,20 +1,26 @@
-import { jobs, getJobById } from '@/lib/data';
 import { NextResponse } from 'next/server';
 
-// GET /api/jobs/[id] - Get a specific job
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+// Proxy job by ID requests to backend
 export async function GET(request, { params }) {
 	try {
-		const job = getJobById(params.id);
+		const backendResponse = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 
-		if (!job) {
-			return NextResponse.json(
-				{ error: 'Job not found' },
-				{ status: 404 }
-			);
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		return NextResponse.json(job);
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Job GET proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -22,23 +28,27 @@ export async function GET(request, { params }) {
 	}
 }
 
-// PUT /api/jobs/[id] - Update a job
 export async function PUT(request, { params }) {
 	try {
-		const jobIndex = jobs.findIndex((job) => job.id === params.id);
+		const jobData = await request.json();
 
-		if (jobIndex === -1) {
-			return NextResponse.json(
-				{ error: 'Job not found' },
-				{ status: 404 }
-			);
+		const backendResponse = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(jobData),
+		});
+
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		const updatedData = await request.json();
-		jobs[jobIndex] = { ...jobs[jobIndex], ...updatedData };
-
-		return NextResponse.json(jobs[jobIndex]);
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Job PUT proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
@@ -46,22 +56,24 @@ export async function PUT(request, { params }) {
 	}
 }
 
-// DELETE /api/jobs/[id] - Delete a job
 export async function DELETE(request, { params }) {
 	try {
-		const jobIndex = jobs.findIndex((job) => job.id === params.id);
+		const backendResponse = await fetch(`${BACKEND_URL}/jobs/${params.id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
 
-		if (jobIndex === -1) {
-			return NextResponse.json(
-				{ error: 'Job not found' },
-				{ status: 404 }
-			);
+		const data = await backendResponse.json();
+
+		if (!backendResponse.ok) {
+			return NextResponse.json(data, { status: backendResponse.status });
 		}
 
-		jobs.splice(jobIndex, 1);
-
-		return NextResponse.json({ message: 'Job deleted successfully' });
+		return NextResponse.json(data);
 	} catch (error) {
+		console.error('Job DELETE proxy error:', error);
 		return NextResponse.json(
 			{ error: 'Internal server error' },
 			{ status: 500 }
