@@ -39,7 +39,7 @@ export async function POST(request) {
 	try {
 		const jobData = await request.json();
 		const { searchParams } = new URL(request.url);
-		const recruiterId = searchParams.get('recruiter');
+		const recruiterId = searchParams.get('postedBy') || searchParams.get('recruiter');
 
 		if (!recruiterId) {
 			return NextResponse.json(

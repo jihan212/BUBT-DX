@@ -21,7 +21,11 @@ router.get('/', async (req, res) => {
 			skills: user.skills || [],
 			gpa: user.gpa,
 			company: user.company,
-			position: user.position
+			position: user.position,
+			certificates: user.certificates || [],
+			projects: user.projects || [],
+			experience: user.experience || [],
+			socialLinks: user.socialLinks || {}
 		}));
 
 		res.json(formattedUsers);
@@ -57,7 +61,11 @@ router.get('/:id', async (req, res) => {
 			skills: user.skills || [],
 			gpa: user.gpa,
 			company: user.company,
-			position: user.position
+			position: user.position,
+			certificates: user.certificates || [],
+			projects: user.projects || [],
+			experience: user.experience || [],
+			socialLinks: user.socialLinks || {}
 		});
 	} catch (error) {
 		console.error('Get user error:', error);
@@ -94,7 +102,11 @@ router.put('/:id', async (req, res) => {
 			'skills',
 			'gpa',
 			'company',
-			'position'
+			'position',
+			'certificates',
+			'projects',
+			'experience',
+			'socialLinks'
 		];
 
 		// Update allowed fields
@@ -128,7 +140,11 @@ router.put('/:id', async (req, res) => {
 			skills: userObject.skills || [],
 			gpa: userObject.gpa,
 			company: userObject.company,
-			position: userObject.position
+			position: userObject.position,
+			certificates: userObject.certificates || [],
+			projects: userObject.projects || [],
+			experience: userObject.experience || [],
+			socialLinks: userObject.socialLinks || {}
 		});
 	} catch (error) {
 		console.error('Update user error:', error);

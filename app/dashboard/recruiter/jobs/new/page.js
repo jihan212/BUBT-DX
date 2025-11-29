@@ -77,6 +77,7 @@ export default function NewJobPosting() {
 
 			if (!cookieValue) {
 				setError('Please log in again');
+				setIsSubmitting(false);
 				return;
 			}
 
@@ -84,15 +85,19 @@ export default function NewJobPosting() {
 				decodeURIComponent(cookieValue.split('=')[1])
 			);
 
+			if (!userData || !userData.id) {
+				setError('Invalid user session. Please log in again.');
+				setIsSubmitting(false);
+				return;
+			}
+
 			const jobData = {
 				...formData,
 				skills: skills,
-				recruiterId: userData.id,
-				postedDate: new Date().toISOString(),
-				status: 'Active',
+				department: formData.department || 'General',
 			};
 
-			const response = await fetch('/api/jobs', {
+			const response = await fetch(`/api/jobs?postedBy=${userData.id}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

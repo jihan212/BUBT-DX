@@ -52,6 +52,46 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		trim: true
 	},
+	// Additional profile fields
+	certificates: [{
+		name: String,
+		issuer: String,
+		issueDate: Date,
+		expiryDate: Date,
+		credentialId: String,
+		credentialUrl: String
+	}],
+	projects: [{
+		name: String,
+		description: String,
+		technologies: [String],
+		projectUrl: String,
+		githubUrl: String,
+		startDate: Date,
+		endDate: Date,
+		current: Boolean
+	}],
+	experience: [{
+		title: String,
+		company: String,
+		type: {
+			type: String,
+			enum: ['Full-time', 'Part-time', 'Internship', 'Volunteer', 'Freelance']
+		},
+		location: String,
+		startDate: Date,
+		endDate: Date,
+		current: Boolean,
+		description: String
+	}],
+	socialLinks: {
+		github: String,
+		linkedin: String,
+		twitter: String,
+		medium: String,
+		portfolio: String,
+		website: String
+	},
 	// Recruiter specific fields
 	company: {
 		type: String,
