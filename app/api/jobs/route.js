@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+// Use server-side env var first, then fallback to NEXT_PUBLIC_API_URL, then localhost
+const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
 // Proxy jobs requests to backend
 export async function GET(request) {

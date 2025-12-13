@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+// Use server-side env var first, then fallback to NEXT_PUBLIC_API_URL, then localhost
+const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
 // Proxy login request to backend
 export async function POST(request) {
@@ -39,8 +40,12 @@ export async function POST(request) {
 		return response;
 	} catch (error) {
 		console.error('Auth proxy error:', error);
+		console.error('BACKEND_URL:', BACKEND_URL);
 		return NextResponse.json(
-			{ error: 'Internal server error' },
+			{ 
+				error: 'Internal server error',
+				details: process.env.NODE_ENV === 'development' ? error.message : undefined
+			},
 			{ status: 500 }
 		);
 	}
