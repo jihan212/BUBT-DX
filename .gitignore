@@ -38,6 +38,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Sync scripts 
+sync-backend.ps1
+sync-backend.sh
+
 # IDE
 .vscode/
 .idea/

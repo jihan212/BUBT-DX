@@ -333,23 +333,23 @@ export default function StudentProfile() {
 	// PDF Resume Generator
 	const generatePDF = () => {
 		if (!user) return;
-		
+
 		setIsGeneratingPDF(true);
-		
+
 		try {
 			const pdf = new jsPDF();
 			let yPos = 20;
 			const pageWidth = pdf.internal.pageSize.getWidth();
 			const margin = 20;
 			const maxWidth = pageWidth - 2 * margin;
-			
+
 			// Helper function to add text with word wrapping
 			const addText = (text, size, isBold = false, color = [0, 0, 0]) => {
 				if (!text) return;
 				pdf.setFontSize(size);
 				pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
 				pdf.setTextColor(color[0], color[1], color[2]);
-				
+
 				const lines = pdf.splitTextToSize(String(text), maxWidth);
 				pdf.text(lines, margin, yPos);
 				yPos += lines.length * (size * 0.4);
@@ -366,8 +366,10 @@ export default function StudentProfile() {
 			const contactInfo = [];
 			if (user.email) contactInfo.push(user.email);
 			if (user.phone) contactInfo.push(user.phone);
-			if (user.socialLinks?.linkedin) contactInfo.push(`LinkedIn: ${user.socialLinks.linkedin}`);
-			if (user.socialLinks?.github) contactInfo.push(`GitHub: ${user.socialLinks.github}`);
+			if (user.socialLinks?.linkedin)
+				contactInfo.push(`LinkedIn: ${user.socialLinks.linkedin}`);
+			if (user.socialLinks?.github)
+				contactInfo.push(`GitHub: ${user.socialLinks.github}`);
 			if (contactInfo.length > 0) {
 				pdf.text(contactInfo.join(' | '), margin, yPos);
 				yPos += 8;
@@ -401,7 +403,11 @@ export default function StudentProfile() {
 			pdf.setFont('helvetica', 'normal');
 			pdf.setFontSize(10);
 			if (user.graduationYear) {
-				pdf.text(`Expected Graduation: ${user.graduationYear}`, margin + 5, yPos);
+				pdf.text(
+					`Expected Graduation: ${user.graduationYear}`,
+					margin + 5,
+					yPos
+				);
 				yPos += 5;
 			}
 			if (user.gpa) {
@@ -431,7 +437,7 @@ export default function StudentProfile() {
 				}
 				addText('EXPERIENCE', 14, true, [0, 0, 0]);
 				yPos += 5;
-				
+
 				user.experience.forEach((exp, index) => {
 					if (yPos > 260) {
 						pdf.addPage();
@@ -455,8 +461,20 @@ export default function StudentProfile() {
 					}
 					const dateInfo = [];
 					if (exp.startDate) {
-						const startDate = new Date(exp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-						const endDate = exp.current ? 'Present' : (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '');
+						const startDate = new Date(
+							exp.startDate
+						).toLocaleDateString('en-US', {
+							month: 'short',
+							year: 'numeric',
+						});
+						const endDate = exp.current
+							? 'Present'
+							: exp.endDate
+							? new Date(exp.endDate).toLocaleDateString(
+									'en-US',
+									{ month: 'short', year: 'numeric' }
+							  )
+							: '';
 						if (endDate) {
 							dateInfo.push(`${startDate} - ${endDate}`);
 						} else {
@@ -468,7 +486,10 @@ export default function StudentProfile() {
 						yPos += 5;
 					}
 					if (exp.description) {
-						const descLines = pdf.splitTextToSize(exp.description, maxWidth - 5);
+						const descLines = pdf.splitTextToSize(
+							exp.description,
+							maxWidth - 5
+						);
 						pdf.text(descLines, margin + 5, yPos);
 						yPos += descLines.length * 4 + 3;
 					}
@@ -487,7 +508,7 @@ export default function StudentProfile() {
 				}
 				addText('PROJECTS', 14, true, [0, 0, 0]);
 				yPos += 5;
-				
+
 				user.projects.forEach((project, index) => {
 					if (yPos > 260) {
 						pdf.addPage();
@@ -499,17 +520,27 @@ export default function StudentProfile() {
 						pdf.text(project.name, margin, yPos);
 						yPos += 6;
 					}
-					if (project.technologies && project.technologies.length > 0) {
+					if (
+						project.technologies &&
+						project.technologies.length > 0
+					) {
 						pdf.setFont('helvetica', 'normal');
 						pdf.setFontSize(9);
 						pdf.setTextColor(100, 100, 100);
-						pdf.text(project.technologies.join(' • '), margin, yPos);
+						pdf.text(
+							project.technologies.join(' • '),
+							margin,
+							yPos
+						);
 						yPos += 5;
 						pdf.setTextColor(0, 0, 0);
 					}
 					if (project.description) {
 						pdf.setFontSize(10);
-						const descLines = pdf.splitTextToSize(project.description, maxWidth - 5);
+						const descLines = pdf.splitTextToSize(
+							project.description,
+							maxWidth - 5
+						);
 						pdf.text(descLines, margin + 5, yPos);
 						yPos += descLines.length * 4;
 					}
@@ -517,11 +548,19 @@ export default function StudentProfile() {
 						pdf.setFontSize(9);
 						pdf.setTextColor(0, 100, 200);
 						if (project.githubUrl) {
-							pdf.text(`GitHub: ${project.githubUrl}`, margin + 5, yPos);
+							pdf.text(
+								`GitHub: ${project.githubUrl}`,
+								margin + 5,
+								yPos
+							);
 							yPos += 4;
 						}
 						if (project.projectUrl) {
-							pdf.text(`Live: ${project.projectUrl}`, margin + 5, yPos);
+							pdf.text(
+								`Live: ${project.projectUrl}`,
+								margin + 5,
+								yPos
+							);
 							yPos += 4;
 						}
 						pdf.setTextColor(0, 0, 0);
@@ -541,7 +580,7 @@ export default function StudentProfile() {
 				}
 				addText('CERTIFICATIONS', 14, true, [0, 0, 0]);
 				yPos += 5;
-				
+
 				user.certificates.forEach((cert, index) => {
 					if (yPos > 260) {
 						pdf.addPage();
@@ -560,13 +599,33 @@ export default function StudentProfile() {
 						yPos += 5;
 					}
 					if (cert.issueDate) {
-						const issueDate = new Date(cert.issueDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-						const expiryDate = cert.expiryDate ? ` - ${new Date(cert.expiryDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : '';
-						pdf.text(`Issued: ${issueDate}${expiryDate}`, margin + 5, yPos);
+						const issueDate = new Date(
+							cert.issueDate
+						).toLocaleDateString('en-US', {
+							month: 'long',
+							year: 'numeric',
+						});
+						const expiryDate = cert.expiryDate
+							? ` - ${new Date(
+									cert.expiryDate
+							  ).toLocaleDateString('en-US', {
+									month: 'long',
+									year: 'numeric',
+							  })}`
+							: '';
+						pdf.text(
+							`Issued: ${issueDate}${expiryDate}`,
+							margin + 5,
+							yPos
+						);
 						yPos += 5;
 					}
 					if (cert.credentialId) {
-						pdf.text(`Credential ID: ${cert.credentialId}`, margin + 5, yPos);
+						pdf.text(
+							`Credential ID: ${cert.credentialId}`,
+							margin + 5,
+							yPos
+						);
 						yPos += 8;
 					}
 					if (index < user.certificates.length - 1) {
@@ -576,9 +635,11 @@ export default function StudentProfile() {
 			}
 
 			// Save PDF
-			const fileName = `${user.name?.replace(/\s+/g, '_') || 'Resume'}_Resume.pdf`;
+			const fileName = `${
+				user.name?.replace(/\s+/g, '_') || 'Resume'
+			}_Resume.pdf`;
 			pdf.save(fileName);
-			
+
 			setIsGeneratingPDF(false);
 		} catch (error) {
 			console.error('Error generating PDF:', error);
@@ -675,7 +736,9 @@ export default function StudentProfile() {
 									disabled={isGeneratingPDF}
 								>
 									<Download className='mr-2 h-5 w-5' />
-									{isGeneratingPDF ? 'Generating...' : 'Download Resume PDF'}
+									{isGeneratingPDF
+										? 'Generating...'
+										: 'Download Resume PDF'}
 								</Button>
 							</>
 						) : (
@@ -693,7 +756,7 @@ export default function StudentProfile() {
 								<Button
 									size='lg'
 									variant='outline'
-									className='border-white/30 text-white hover:bg-white/10'
+									className='border-white/30 text-white bg-white/10'
 									onClick={handleCancel}
 								>
 									<X className='mr-2 h-5 w-5' />
@@ -830,7 +893,9 @@ export default function StudentProfile() {
 									<div className='flex space-x-2'>
 										<Input
 											value={newSkill}
-											onChange={(e) => setNewSkill(e.target.value)}
+											onChange={(e) =>
+												setNewSkill(e.target.value)
+											}
 											placeholder='Add a skill (e.g. React, Python)'
 											onKeyPress={(e) => {
 												if (e.key === 'Enter') {
@@ -852,28 +917,35 @@ export default function StudentProfile() {
 									</div>
 									{formData.skills.length > 0 && (
 										<div className='flex flex-wrap gap-2'>
-											{formData.skills.map((skill, index) => (
-												<Badge
-													key={index}
-													variant='secondary'
-													className='bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center gap-1'
-												>
-													{skill}
-													<button
-														type='button'
-														onClick={() => removeSkill(skill)}
-														className='ml-1 hover:text-red-600'
+											{formData.skills.map(
+												(skill, index) => (
+													<Badge
+														key={index}
+														variant='secondary'
+														className='bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center gap-1'
 													>
-														<X className='h-3 w-3' />
-													</button>
-												</Badge>
-											))}
+														{skill}
+														<button
+															type='button'
+															onClick={() =>
+																removeSkill(
+																	skill
+																)
+															}
+															className='ml-1 hover:text-red-600'
+														>
+															<X className='h-3 w-3' />
+														</button>
+													</Badge>
+												)
+											)}
 										</div>
 									)}
 								</>
 							) : (
 								<div className='flex flex-wrap gap-2'>
-									{formData.skills && formData.skills.length > 0 ? (
+									{formData.skills &&
+									formData.skills.length > 0 ? (
 										formData.skills.map((skill, index) => (
 											<Badge
 												key={index}
@@ -1088,7 +1160,9 @@ export default function StudentProfile() {
 											className='w-full'
 										>
 											<Download className='mr-2 h-4 w-4' />
-											{isGeneratingPDF ? 'Generating...' : 'Download Resume PDF'}
+											{isGeneratingPDF
+												? 'Generating...'
+												: 'Download Resume PDF'}
 										</Button>
 									</>
 								) : (
@@ -1145,12 +1219,18 @@ export default function StudentProfile() {
 											GitHub
 										</Label>
 										<Input
-											value={formData.socialLinks?.github || ''}
+											value={
+												formData.socialLinks?.github ||
+												''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													github: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														github: e.target.value,
+													}
+												)
 											}
 											placeholder='https://github.com/username'
 										/>
@@ -1161,12 +1241,19 @@ export default function StudentProfile() {
 											LinkedIn
 										</Label>
 										<Input
-											value={formData.socialLinks?.linkedin || ''}
+											value={
+												formData.socialLinks
+													?.linkedin || ''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													linkedin: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														linkedin:
+															e.target.value,
+													}
+												)
 											}
 											placeholder='https://linkedin.com/in/username'
 										/>
@@ -1177,12 +1264,18 @@ export default function StudentProfile() {
 											Twitter
 										</Label>
 										<Input
-											value={formData.socialLinks?.twitter || ''}
+											value={
+												formData.socialLinks?.twitter ||
+												''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													twitter: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														twitter: e.target.value,
+													}
+												)
 											}
 											placeholder='https://twitter.com/username'
 										/>
@@ -1193,12 +1286,18 @@ export default function StudentProfile() {
 											Medium
 										</Label>
 										<Input
-											value={formData.socialLinks?.medium || ''}
+											value={
+												formData.socialLinks?.medium ||
+												''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													medium: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														medium: e.target.value,
+													}
+												)
 											}
 											placeholder='https://medium.com/@username'
 										/>
@@ -1209,12 +1308,19 @@ export default function StudentProfile() {
 											Portfolio
 										</Label>
 										<Input
-											value={formData.socialLinks?.portfolio || ''}
+											value={
+												formData.socialLinks
+													?.portfolio || ''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													portfolio: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														portfolio:
+															e.target.value,
+													}
+												)
 											}
 											placeholder='https://yourportfolio.com'
 										/>
@@ -1225,12 +1331,18 @@ export default function StudentProfile() {
 											Website
 										</Label>
 										<Input
-											value={formData.socialLinks?.website || ''}
+											value={
+												formData.socialLinks?.website ||
+												''
+											}
 											onChange={(e) =>
-												handleInputChange('socialLinks', {
-													...formData.socialLinks,
-													website: e.target.value,
-												})
+												handleInputChange(
+													'socialLinks',
+													{
+														...formData.socialLinks,
+														website: e.target.value,
+													}
+												)
 											}
 											placeholder='https://yourwebsite.com'
 										/>
@@ -1288,7 +1400,9 @@ export default function StudentProfile() {
 									)}
 									{formData.socialLinks?.portfolio && (
 										<a
-											href={formData.socialLinks.portfolio}
+											href={
+												formData.socialLinks.portfolio
+											}
 											target='_blank'
 											rel='noopener noreferrer'
 											className='flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-lg transition-colors'
@@ -1310,17 +1424,915 @@ export default function StudentProfile() {
 											<ExternalLink className='h-3 w-3' />
 										</a>
 									)}
-									{(!formData.socialLinks?.github &&
+									{!formData.socialLinks?.github &&
 										!formData.socialLinks?.linkedin &&
 										!formData.socialLinks?.twitter &&
 										!formData.socialLinks?.medium &&
 										!formData.socialLinks?.portfolio &&
-										!formData.socialLinks?.website) && (
-										<p className='text-sm text-gray-500 italic'>
-											No social links added yet
-										</p>
-									)}
+										!formData.socialLinks?.website && (
+											<p className='text-sm text-gray-500 italic'>
+												No social links added yet
+											</p>
+										)}
 								</div>
+							)}
+						</CardContent>
+					</Card>
+
+					{/* Experience Section */}
+					<Card className='border-0 shadow-lg hover:shadow-xl transition-all duration-300'>
+						<CardHeader className='pb-4'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center space-x-3'>
+									<div className='h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center'>
+										<Briefcase className='h-5 w-5 text-white' />
+									</div>
+									<div>
+										<CardTitle className='text-lg'>
+											Experience & Volunteering
+										</CardTitle>
+										<CardDescription>
+											Your work and volunteer experience
+										</CardDescription>
+									</div>
+								</div>
+								{isEditing && (
+									<Button
+										size='sm'
+										variant='outline'
+										onClick={addExperience}
+									>
+										<Plus className='h-4 w-4 mr-1' />
+										Add Experience
+									</Button>
+								)}
+							</div>
+						</CardHeader>
+						<CardContent className='pt-0 space-y-4'>
+							{formData.experience &&
+							formData.experience.length > 0 ? (
+								formData.experience.map((exp, index) => (
+									<div
+										key={index}
+										className='p-4 border rounded-lg bg-gray-50 space-y-4'
+									>
+										{isEditing ? (
+											<>
+												<div className='flex justify-between items-start'>
+													<h4 className='font-semibold'>
+														Experience #{index + 1}
+													</h4>
+													<Button
+														size='sm'
+														variant='ghost'
+														onClick={() =>
+															removeExperience(
+																index
+															)
+														}
+														className='text-red-600 hover:text-red-700'
+													>
+														<Trash2 className='h-4 w-4' />
+													</Button>
+												</div>
+												<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+													<div className='space-y-2'>
+														<Label>
+															Job Title *
+														</Label>
+														<Input
+															value={
+																exp.title || ''
+															}
+															onChange={(e) =>
+																updateExperience(
+																	index,
+																	'title',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., Software Engineer Intern'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Company/Organization
+															*
+														</Label>
+														<Input
+															value={
+																exp.company ||
+																''
+															}
+															onChange={(e) =>
+																updateExperience(
+																	index,
+																	'company',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., Tech Corp'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>Type</Label>
+														<select
+															value={
+																exp.type ||
+																'Full-time'
+															}
+															onChange={(e) =>
+																updateExperience(
+																	index,
+																	'type',
+																	e.target
+																		.value
+																)
+															}
+															className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background'
+														>
+															<option value='Full-time'>
+																Full-time
+															</option>
+															<option value='Part-time'>
+																Part-time
+															</option>
+															<option value='Internship'>
+																Internship
+															</option>
+															<option value='Volunteer'>
+																Volunteer
+															</option>
+															<option value='Freelance'>
+																Freelance
+															</option>
+														</select>
+													</div>
+													<div className='space-y-2'>
+														<Label>Location</Label>
+														<Input
+															value={
+																exp.location ||
+																''
+															}
+															onChange={(e) =>
+																updateExperience(
+																	index,
+																	'location',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., Dhaka, Bangladesh'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Start Date
+														</Label>
+														<Input
+															type='date'
+															value={
+																exp.startDate
+																	? new Date(
+																			exp.startDate
+																	  )
+																			.toISOString()
+																			.split(
+																				'T'
+																			)[0]
+																	: ''
+															}
+															onChange={(e) =>
+																updateExperience(
+																	index,
+																	'startDate',
+																	e.target
+																		.value
+																)
+															}
+														/>
+													</div>
+													<div className='space-y-2'>
+														<div className='flex items-center space-x-2'>
+															<input
+																type='checkbox'
+																id={`exp-current-${index}`}
+																checked={
+																	exp.current ||
+																	false
+																}
+																onChange={(e) =>
+																	updateExperience(
+																		index,
+																		'current',
+																		e.target
+																			.checked
+																	)
+																}
+																className='h-4 w-4'
+															/>
+															<Label
+																htmlFor={`exp-current-${index}`}
+															>
+																Currently
+																working here
+															</Label>
+														</div>
+														{!exp.current && (
+															<>
+																<Label>
+																	End Date
+																</Label>
+																<Input
+																	type='date'
+																	value={
+																		exp.endDate
+																			? new Date(
+																					exp.endDate
+																			  )
+																					.toISOString()
+																					.split(
+																						'T'
+																					)[0]
+																			: ''
+																	}
+																	onChange={(
+																		e
+																	) =>
+																		updateExperience(
+																			index,
+																			'endDate',
+																			e
+																				.target
+																				.value
+																		)
+																	}
+																/>
+															</>
+														)}
+													</div>
+												</div>
+												<div className='space-y-2'>
+													<Label>Description</Label>
+													<Textarea
+														value={
+															exp.description ||
+															''
+														}
+														onChange={(e) =>
+															updateExperience(
+																index,
+																'description',
+																e.target.value
+															)
+														}
+														placeholder='Describe your responsibilities and achievements...'
+														rows={3}
+													/>
+												</div>
+											</>
+										) : (
+											<>
+												<div className='flex justify-between items-start'>
+													<div>
+														<h4 className='font-semibold text-lg'>
+															{exp.title ||
+																'Untitled'}
+														</h4>
+														<p className='text-gray-600'>
+															{exp.company ||
+																'Company not specified'}
+															{exp.type &&
+																` • ${exp.type}`}
+															{exp.location &&
+																` • ${exp.location}`}
+														</p>
+														<p className='text-sm text-gray-500 mt-1'>
+															{exp.startDate &&
+																new Date(
+																	exp.startDate
+																).toLocaleDateString(
+																	'en-US',
+																	{
+																		month: 'short',
+																		year: 'numeric',
+																	}
+																)}
+															{exp.startDate &&
+																(exp.current
+																	? ' - Present'
+																	: exp.endDate
+																	? ` - ${new Date(
+																			exp.endDate
+																	  ).toLocaleDateString(
+																			'en-US',
+																			{
+																				month: 'short',
+																				year: 'numeric',
+																			}
+																	  )}`
+																	: '')}
+														</p>
+													</div>
+												</div>
+												{exp.description && (
+													<p className='text-gray-700 mt-2 whitespace-pre-wrap'>
+														{exp.description}
+													</p>
+												)}
+											</>
+										)}
+									</div>
+								))
+							) : (
+								<p className='text-sm text-gray-500 italic text-center py-4'>
+									{isEditing
+										? 'Click "Add Experience" to add your work or volunteer experience'
+										: 'No experience added yet'}
+								</p>
+							)}
+						</CardContent>
+					</Card>
+
+					{/* Projects Section */}
+					<Card className='border-0 shadow-lg hover:shadow-xl transition-all duration-300'>
+						<CardHeader className='pb-4'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center space-x-3'>
+									<div className='h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center'>
+										<Code className='h-5 w-5 text-white' />
+									</div>
+									<div>
+										<CardTitle className='text-lg'>
+											Projects
+										</CardTitle>
+										<CardDescription>
+											Showcase your projects and
+											achievements
+										</CardDescription>
+									</div>
+								</div>
+								{isEditing && (
+									<Button
+										size='sm'
+										variant='outline'
+										onClick={addProject}
+									>
+										<Plus className='h-4 w-4 mr-1' />
+										Add Project
+									</Button>
+								)}
+							</div>
+						</CardHeader>
+						<CardContent className='pt-0 space-y-4'>
+							{formData.projects &&
+							formData.projects.length > 0 ? (
+								formData.projects.map((project, index) => (
+									<div
+										key={index}
+										className='p-4 border rounded-lg bg-gray-50 space-y-4'
+									>
+										{isEditing ? (
+											<>
+												<div className='flex justify-between items-start'>
+													<h4 className='font-semibold'>
+														Project #{index + 1}
+													</h4>
+													<Button
+														size='sm'
+														variant='ghost'
+														onClick={() =>
+															removeProject(index)
+														}
+														className='text-red-600 hover:text-red-700'
+													>
+														<Trash2 className='h-4 w-4' />
+													</Button>
+												</div>
+												<div className='space-y-2'>
+													<Label>
+														Project Name *
+													</Label>
+													<Input
+														value={
+															project.name || ''
+														}
+														onChange={(e) =>
+															updateProject(
+																index,
+																'name',
+																e.target.value
+															)
+														}
+														placeholder='e.g., E-Commerce Website'
+													/>
+												</div>
+												<div className='space-y-2'>
+													<Label>Description</Label>
+													<Textarea
+														value={
+															project.description ||
+															''
+														}
+														onChange={(e) =>
+															updateProject(
+																index,
+																'description',
+																e.target.value
+															)
+														}
+														placeholder='Describe your project...'
+														rows={3}
+													/>
+												</div>
+												<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+													<div className='space-y-2'>
+														<Label>
+															Technologies
+														</Label>
+														<div className='flex space-x-2'>
+															<Input
+																placeholder='e.g., React, Node.js'
+																onKeyPress={(
+																	e
+																) => {
+																	if (
+																		e.key ===
+																		'Enter'
+																	) {
+																		e.preventDefault();
+																		addProjectTechnology(
+																			index,
+																			e
+																				.target
+																				.value
+																		);
+																		e.target.value =
+																			'';
+																	}
+																}}
+															/>
+															<Button
+																type='button'
+																size='sm'
+																variant='outline'
+																onClick={(
+																	e
+																) => {
+																	const input =
+																		e.target
+																			.parentElement
+																			.previousElementSibling;
+																	if (
+																		input.value
+																	) {
+																		addProjectTechnology(
+																			index,
+																			input.value
+																		);
+																		input.value =
+																			'';
+																	}
+																}}
+															>
+																<Plus className='h-4 w-4' />
+															</Button>
+														</div>
+														{project.technologies &&
+															project.technologies
+																.length > 0 && (
+																<div className='flex flex-wrap gap-2 mt-2'>
+																	{project.technologies.map(
+																		(
+																			tech,
+																			techIndex
+																		) => (
+																			<Badge
+																				key={
+																					techIndex
+																				}
+																				variant='secondary'
+																				className='bg-purple-100 text-purple-800 flex items-center gap-1'
+																			>
+																				{
+																					tech
+																				}
+																				<button
+																					type='button'
+																					onClick={() =>
+																						removeProjectTechnology(
+																							index,
+																							tech
+																						)
+																					}
+																					className='hover:text-red-600'
+																				>
+																					<X className='h-3 w-3' />
+																				</button>
+																			</Badge>
+																		)
+																	)}
+																</div>
+															)}
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															GitHub URL
+														</Label>
+														<Input
+															value={
+																project.githubUrl ||
+																''
+															}
+															onChange={(e) =>
+																updateProject(
+																	index,
+																	'githubUrl',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='https://github.com/username/repo'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Live Project URL
+														</Label>
+														<Input
+															value={
+																project.projectUrl ||
+																''
+															}
+															onChange={(e) =>
+																updateProject(
+																	index,
+																	'projectUrl',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='https://yourproject.com'
+														/>
+													</div>
+												</div>
+											</>
+										) : (
+											<>
+												<div className='flex justify-between items-start'>
+													<div>
+														<h4 className='font-semibold text-lg'>
+															{project.name ||
+																'Untitled Project'}
+														</h4>
+														{project.technologies &&
+															project.technologies
+																.length > 0 && (
+																<div className='flex flex-wrap gap-2 mt-2'>
+																	{project.technologies.map(
+																		(
+																			tech,
+																			techIndex
+																		) => (
+																			<Badge
+																				key={
+																					techIndex
+																				}
+																				variant='secondary'
+																				className='bg-purple-100 text-purple-800'
+																			>
+																				{
+																					tech
+																				}
+																			</Badge>
+																		)
+																	)}
+																</div>
+															)}
+													</div>
+												</div>
+												{project.description && (
+													<p className='text-gray-700 mt-2 whitespace-pre-wrap'>
+														{project.description}
+													</p>
+												)}
+												<div className='flex gap-3 mt-3'>
+													{project.githubUrl && (
+														<a
+															href={
+																project.githubUrl
+															}
+															target='_blank'
+															rel='noopener noreferrer'
+															className='flex items-center space-x-1 text-blue-600 hover:text-blue-700'
+														>
+															<Github className='h-4 w-4' />
+															<span>GitHub</span>
+															<ExternalLink className='h-3 w-3' />
+														</a>
+													)}
+													{project.projectUrl && (
+														<a
+															href={
+																project.projectUrl
+															}
+															target='_blank'
+															rel='noopener noreferrer'
+															className='flex items-center space-x-1 text-green-600 hover:text-green-700'
+														>
+															<Globe className='h-4 w-4' />
+															<span>
+																Live Demo
+															</span>
+															<ExternalLink className='h-3 w-3' />
+														</a>
+													)}
+												</div>
+											</>
+										)}
+									</div>
+								))
+							) : (
+								<p className='text-sm text-gray-500 italic text-center py-4'>
+									{isEditing
+										? 'Click "Add Project" to showcase your projects'
+										: 'No projects added yet'}
+								</p>
+							)}
+						</CardContent>
+					</Card>
+
+					{/* Certificates Section */}
+					<Card className='border-0 shadow-lg hover:shadow-xl transition-all duration-300'>
+						<CardHeader className='pb-4'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center space-x-3'>
+									<div className='h-10 w-10 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center'>
+										<Award className='h-5 w-5 text-white' />
+									</div>
+									<div>
+										<CardTitle className='text-lg'>
+											Certifications
+										</CardTitle>
+										<CardDescription>
+											Your professional certifications and
+											achievements
+										</CardDescription>
+									</div>
+								</div>
+								{isEditing && (
+									<Button
+										size='sm'
+										variant='outline'
+										onClick={addCertificate}
+									>
+										<Plus className='h-4 w-4 mr-1' />
+										Add Certificate
+									</Button>
+								)}
+							</div>
+						</CardHeader>
+						<CardContent className='pt-0 space-y-4'>
+							{formData.certificates &&
+							formData.certificates.length > 0 ? (
+								formData.certificates.map((cert, index) => (
+									<div
+										key={index}
+										className='p-4 border rounded-lg bg-gray-50 space-y-4'
+									>
+										{isEditing ? (
+											<>
+												<div className='flex justify-between items-start'>
+													<h4 className='font-semibold'>
+														Certificate #{index + 1}
+													</h4>
+													<Button
+														size='sm'
+														variant='ghost'
+														onClick={() =>
+															removeCertificate(
+																index
+															)
+														}
+														className='text-red-600 hover:text-red-700'
+													>
+														<Trash2 className='h-4 w-4' />
+													</Button>
+												</div>
+												<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+													<div className='space-y-2'>
+														<Label>
+															Certificate Name *
+														</Label>
+														<Input
+															value={
+																cert.name || ''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'name',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., AWS Certified Developer'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Issuing Organization
+														</Label>
+														<Input
+															value={
+																cert.issuer ||
+																''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'issuer',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., Amazon Web Services'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Issue Date
+														</Label>
+														<Input
+															type='date'
+															value={
+																cert.issueDate
+																	? new Date(
+																			cert.issueDate
+																	  )
+																			.toISOString()
+																			.split(
+																				'T'
+																			)[0]
+																	: ''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'issueDate',
+																	e.target
+																		.value
+																)
+															}
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Expiry Date (if
+															applicable)
+														</Label>
+														<Input
+															type='date'
+															value={
+																cert.expiryDate
+																	? new Date(
+																			cert.expiryDate
+																	  )
+																			.toISOString()
+																			.split(
+																				'T'
+																			)[0]
+																	: ''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'expiryDate',
+																	e.target
+																		.value
+																)
+															}
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Credential ID
+														</Label>
+														<Input
+															value={
+																cert.credentialId ||
+																''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'credentialId',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='e.g., AWS-DEV-12345'
+														/>
+													</div>
+													<div className='space-y-2'>
+														<Label>
+															Credential URL
+														</Label>
+														<Input
+															value={
+																cert.credentialUrl ||
+																''
+															}
+															onChange={(e) =>
+																updateCertificate(
+																	index,
+																	'credentialUrl',
+																	e.target
+																		.value
+																)
+															}
+															placeholder='https://verify.certificate.com/...'
+														/>
+													</div>
+												</div>
+											</>
+										) : (
+											<>
+												<div className='flex justify-between items-start'>
+													<div>
+														<h4 className='font-semibold text-lg'>
+															{cert.name ||
+																'Untitled Certificate'}
+														</h4>
+														{cert.issuer && (
+															<p className='text-gray-600 mt-1'>
+																Issued by:{' '}
+																{cert.issuer}
+															</p>
+														)}
+														<div className='text-sm text-gray-500 mt-2 space-y-1'>
+															{cert.issueDate && (
+																<p>
+																	Issued:{' '}
+																	{new Date(
+																		cert.issueDate
+																	).toLocaleDateString(
+																		'en-US',
+																		{
+																			month: 'long',
+																			year: 'numeric',
+																		}
+																	)}
+																	{cert.expiryDate &&
+																		` - Expires: ${new Date(
+																			cert.expiryDate
+																		).toLocaleDateString(
+																			'en-US',
+																			{
+																				month: 'long',
+																				year: 'numeric',
+																			}
+																		)}`}
+																</p>
+															)}
+															{cert.credentialId && (
+																<p>
+																	Credential
+																	ID:{' '}
+																	{
+																		cert.credentialId
+																	}
+																</p>
+															)}
+														</div>
+													</div>
+													{cert.credentialUrl && (
+														<a
+															href={
+																cert.credentialUrl
+															}
+															target='_blank'
+															rel='noopener noreferrer'
+															className='text-blue-600 hover:text-blue-700 flex items-center space-x-1'
+														>
+															<span>Verify</span>
+															<ExternalLink className='h-4 w-4' />
+														</a>
+													)}
+												</div>
+											</>
+										)}
+									</div>
+								))
+							) : (
+								<p className='text-sm text-gray-500 italic text-center py-4'>
+									{isEditing
+										? 'Click "Add Certificate" to add your certifications'
+										: 'No certificates added yet'}
+								</p>
 							)}
 						</CardContent>
 					</Card>
@@ -1350,6 +2362,10 @@ export default function StudentProfile() {
 											<li>
 												• List your technical skills and
 												expertise
+											</li>
+											<li>
+												• Add your projects, experience,
+												and certifications
 											</li>
 											<li>
 												• Keep your information up to
